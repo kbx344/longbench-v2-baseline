@@ -1,0 +1,27 @@
+# ===== 配置与密钥（不提交） =====
+scripts/config.json
+
+# ===== 数据集原始文件（体积过大，从官方下载） =====
+data/
+
+# ===== 原始大结果 jsonl（含完整上下文，超 GitHub 限制；提交精简版） =====
+results/*.jsonl
+!results/*_slim.jsonl
+!results/*_failed.jsonl
+
+# ===== 第二个模型本次不提交 =====
+results/gpt-6-sol*.jsonl
+
+# ===== 外部克隆的参考仓库 =====
+repo/
+
+# ===== Python 缓存与备份 =====
+__pycache__/
+*.pyc
+*.bak
+
+# ===== 编辑器/系统临时文件 =====
+.vscode/
+.idea/
+*.tmp
+~$*

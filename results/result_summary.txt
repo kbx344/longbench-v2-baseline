@@ -1,0 +1,2 @@
+Model	N	Total	Coverage	Invalid	Fail(窗/敏/政)	Overall	Easy	Hard	Short	Medium	Long	Single-Document QA	Multi-Document QA	Long In-context Learning	Long-dialogue History Understanding	Code Repository Understanding	Long Structured Data Understanding
+gpt-5.6-sol	460	503	91.5	3	39/3/1	60.4	65.7	57.1	61.7	57.1	67.6	57.0	60.5	62.9	51.3	71.0	75.9
