@@ -116,7 +116,9 @@ def main():
     files = [
         os.path.join(RESULT_DIR, f)
         for f in os.listdir(RESULT_DIR)
-        if f.endswith(".jsonl") and not f.endswith("_failed.jsonl")
+        if f.endswith(".jsonl")
+        and not f.endswith("_failed.jsonl")
+        and not f.endswith("_slim.jsonl")
     ]
     results = [r for r in (summarize(p, all_data) for p in files) if r]
     if not results:

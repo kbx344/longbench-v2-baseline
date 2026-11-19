@@ -9,8 +9,8 @@ results/*.jsonl
 !results/*_slim.jsonl
 !results/*_failed.jsonl
 
-# ===== 第二个模型本次不提交 =====
-results/gpt-6-sol*.jsonl
+# ===== 第二个模型原始大结果（精简版/失败记录仍可提交） =====
+results/gpt-6-sol.jsonl
 
 # ===== 外部克隆的参考仓库 =====
 repo/
