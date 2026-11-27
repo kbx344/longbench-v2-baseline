@@ -1,0 +1,494 @@
+From 719439c84bae97dac38a923e1107ed54b6b8e5bf Mon Sep 17 00:00:00 2001
+From: kbx344 <kbx344@users.noreply.github.com>
+Date: Fri, 27 Nov 2026 16:09:42 +0800
+Subject: [PATCH] =?UTF-8?q?feat:=20=E5=8D=81=E9=81=93=E9=A2=98=E5=90=84?=
+ =?UTF-8?q?=E4=B8=80=E5=A5=97=E7=94=BB=E5=B8=83=E7=BB=93=E6=9E=84=EF=BC=8C?=
+ =?UTF-8?q?=E8=BF=90=E8=A1=8C=E7=9B=B4=E8=BF=9E=E5=90=8E=E7=AB=AF=20flowId?=
+ =?UTF-8?q?=20=E5=B9=B6=E5=B1=95=E7=A4=BA=E7=AD=94=E6=A1=88?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ app/layout.tsx                                |   2 +-
+ .../StandardModelEntity/wrapper.tsx           |   2 +-
+ src/components/StandardModelLink/wrapper.tsx  |   2 +-
+ src/xpages/Login/index.tsx                    | 139 ++++++++---
+ src/xpages/Login/test/qa_flows.ts             | 232 ++++++++++++++++++
+ 5 files changed, 340 insertions(+), 37 deletions(-)
+ create mode 100644 src/xpages/Login/test/qa_flows.ts
+
+diff --git a/app/layout.tsx b/app/layout.tsx
+index 95e1587..6d731d5 100644
+--- a/app/layout.tsx
++++ b/app/layout.tsx
+@@ -25,7 +25,7 @@ export default function RootLayout({
+ }>) {
+   return (
+     <html
+-      lang="en"
++      lang="zh-CN"
+       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+     >
+       <body className="min-h-full flex flex-col">
+diff --git a/src/components/StandardModelEntity/wrapper.tsx b/src/components/StandardModelEntity/wrapper.tsx
+index 946c13b..d574908 100644
+--- a/src/components/StandardModelEntity/wrapper.tsx
++++ b/src/components/StandardModelEntity/wrapper.tsx
+@@ -60,7 +60,7 @@ const StandardModelEntityWrapper: React.FC<StandardModelEntityWrapperProps> = (p
+    * [YOUR CODE HERE]
+    */
+ 
+-  console.log('ifFold', ifFold);
++  // console.log('ifFold', ifFold);
+ 
+   /*
+    * [END OF YOUR CODE]
+diff --git a/src/components/StandardModelLink/wrapper.tsx b/src/components/StandardModelLink/wrapper.tsx
+index b1cf856..eee7688 100644
+--- a/src/components/StandardModelLink/wrapper.tsx
++++ b/src/components/StandardModelLink/wrapper.tsx
+@@ -14,7 +14,7 @@ const StandardModelLinkWrapper: React.FC<StandardModelLinkWrapperProps> = (props
+    * [YOUR CODE HERE]
+    */
+ 
+-  console.log(props)
++  // console.log(props)
+ 
+   /*
+    * [END OF YOUR CODE]
+diff --git a/src/xpages/Login/index.tsx b/src/xpages/Login/index.tsx
+index 51373ca..c35f330 100644
+--- a/src/xpages/Login/index.tsx
++++ b/src/xpages/Login/index.tsx
+@@ -1,11 +1,11 @@
+-import React, { useEffect, useMemo, useRef } from 'react';
+-import { Button } from 'antd';
+-import styles from './index.module.css';
++'use client';
++
++import React, { useEffect, useMemo, useRef, useState } from 'react';
++import { Alert, Button, Select, Tag } from 'antd';
+ import type { LoginProps } from './types';
+ 
+ import VisualDiagram, { VisualToolbarConfig } from '@horsecoder/visual-core';
+ 
+-
+ import {
+   VisualCanvasConfig,
+   VisualElementConfig,
+@@ -13,35 +13,39 @@ import {
+ } from '@horsecoder/visual-core';
+ import StandardModelEntityWrapper from '@/components/StandardModelEntity/wrapper';
+ import StandardModelLinkWrapper from '@/components/StandardModelLink/wrapper';
+-import { getView, refreshCanvasLocked, refreshElementLocked, setView } from './handler/handler/diagramHandler';
+-
+-import { first_test } from './test/first_test';
+-import { user_favorites_test } from './test/user_favorites_test';
+-import { flowRun } from '@/src/flows/com.horsecoder.common.whuTalent.flowTesting.core/Run';
+-import { user_excel_test } from './test/user_excel_test';
++import { refreshCanvasLocked, setView } from './handler/handler/diagramHandler';
++import request from '@/utils/axios';
++import { QA_CASES, buildView } from './test/qa_flows';
+ 
++/**
++ * 后端直连地址。
++ * 不走 Next 的 dev rewrite：那条代理 30 秒就断，Q09/Q01/Q02 这类长流程必被判失败。
++ */
++const ENGINE_BASE = process.env.NEXT_PUBLIC_ENGINE_BASE ?? 'http://127.0.0.1:39910';
+ 
+ /**
+  * 组件布局: 登录
++ * 十道题各自一套画布结构，点「运行」按对应 flowId 调后端执行
+  */
+ const LoginPage: React.FC<LoginProps> = () => {
+-
+-
+-
+   // 内部数据: diagramRefInner(diagramRef)
+   const diagramRef = useRef<any>(null);
+   // 内部数据: 工具栏配置(toolbarConfig)
+   const toolbarConfig: VisualToolbarConfig = useMemo(() => [], []);
+ 
++  // 内部数据: 当前题号(qid)
++  const [qid, setQid] = useState<string>('Q10');
++  // 内部数据: 运行中(loading)
++  const [loading, setLoading] = useState<boolean>(false);
++  // 内部数据: 运行结果(out)
++  const [out, setOut] = useState<any>(null);
++
+   useEffect(() => {
+     if (diagramRef.current) {
+       refreshCanvasLocked(diagramRef, false);
+-      setView(diagramRef, user_excel_test);
+-    };
+-  }, [])
+-
+-
+-
++      setView(diagramRef, buildView(qid) as any);
++    }
++  }, [qid]);
+ 
+   const elementConfig: VisualElementConfig = useMemo(
+     () => ({
+@@ -71,7 +75,7 @@ const LoginPage: React.FC<LoginProps> = () => {
+     [],
+   );
+ 
+-    const canvasConfig: VisualCanvasConfig = useMemo(
++  const canvasConfig: VisualCanvasConfig = useMemo(
+     () => ({
+       toolbarConfig,
+       elementConfig,
+@@ -83,28 +87,95 @@ const LoginPage: React.FC<LoginProps> = () => {
+     [toolbarConfig, elementConfig, linkConfig],
+   );
+ 
++  const runCase = async () => {
++    const item = QA_CASES.find((c) => c.qid === qid);
++    if (!item) return;
++    setLoading(true);
++    setOut(null);
++    try {
++      const res: any = await request(`${ENGINE_BASE}/api/engine/flow`, {
++        method: 'POST',
++        data: {
++          flowId: item.flowId,
++          params: item.stream ? { qid: item.qid, idleLimit: '3' } : { qid: item.qid },
++        },
++      });
++      const value = res?.data?.value;
++      if (value) {
++        setOut(value);
++      } else {
++        setOut({ error: `返回体没有 value：${JSON.stringify(res).slice(0, 300)}` });
++      }
++    } catch (e: any) {
++      setOut({ error: e?.message || String(e) });
++    } finally {
++      setLoading(false);
++    }
++  };
++
++  const shownAnswer = out && !out.error ? out.answer : undefined;
++  const shownCorrect = out && !out.error ? String(out.correct) : undefined;
+ 
+   return (
+     <>
+       <div
+-        className={styles.div}
++        style={{
++          position: 'fixed',
++          top: 12,
++          right: 16,
++          zIndex: 20,
++          display: 'flex',
++          gap: 8,
++          alignItems: 'center',
++        }}
+       >
+-        <Button
+-          className={styles.divButton0}
+-          type="primary"
+-          onClick={()=>{
+-            flowRun({structure: JSON.stringify(getView(diagramRef))})
+-          }}
+-        >
++        <Select
++          value={qid}
++          onChange={(v) => setQid(v)}
++          style={{ width: 300 }}
++          options={QA_CASES.map((c) => ({ value: c.qid, label: `${c.qid} ${c.name}` }))}
++        />
++        <Button type="primary" loading={loading} onClick={runCase}>
+           {`运行`}
+         </Button>
+       </div>
+-      <VisualDiagram
+-        // className={styles.divDiv0}
+-        ref={diagramRef}
+-        // {...props.actions.eventsDiv}
+-        canvasConfig={canvasConfig}
+-      />
++
++      {out && (
++        <div
++          style={{
++            position: 'fixed',
++            left: 16,
++            bottom: 16,
++            zIndex: 20,
++            maxWidth: 620,
++            padding: '10px 14px',
++            background: 'rgba(255,255,255,0.96)',
++            border: '1px solid #e8e8e8',
++            borderRadius: 8,
++            boxShadow: '0 2px 12px rgba(0,0,0,0.12)',
++          }}
++        >
++          {out.error ? (
++            <Alert type="error" showIcon title={String(out.error)} />
++          ) : (
++            <>
++              <div style={{ marginBottom: 6 }}>
++                <span style={{ marginRight: 8 }}>答案</span>
++                <Tag color="blue">{String(shownAnswer ?? '')}</Tag>
++                <span style={{ marginRight: 8, marginLeft: 8 }}>判定</span>
++                <Tag color={shownCorrect === 'true' ? 'green' : 'red'}>{String(shownCorrect ?? '')}</Tag>
++              </div>
++              {out.verdict ? (
++                <div style={{ whiteSpace: 'pre-wrap', fontSize: 12, color: '#444', maxHeight: 220, overflow: 'auto' }}>
++                  {String(out.verdict).slice(0, 600)}
++                </div>
++              ) : null}
++            </>
++          )}
++        </div>
++      )}
++
++      <VisualDiagram ref={diagramRef} canvasConfig={canvasConfig} />
+     </>
+   );
+ };
+diff --git a/src/xpages/Login/test/qa_flows.ts b/src/xpages/Login/test/qa_flows.ts
+new file mode 100644
+index 0000000..6fd51af
+--- /dev/null
++++ b/src/xpages/Login/test/qa_flows.ts
+@@ -0,0 +1,232 @@
++import { user_excel_test } from './user_excel_test';
++
++/**
++ * 十道题各自的后端流程结构与画布映射。
++ * 画布上的节点/连线与后端 flow json 一一对应；
++ * 点「运行」时按 flowId 调后端，由后端整条流程执行。
++ */
++
++export interface QaNode {
++  id: string;
++  title: string;
++  reference: string;
++  ins: string[];
++  outs: string[];
++}
++
++export interface QaCase {
++  qid: string;
++  no: string;
++  name: string;
++  flowId: string;
++  stream?: boolean;
++  nodes: QaNode[];
++  routes: Array<[string, string]>;
++}
++
++const NS = '@com.horsecoder.common.whuTalent.flowTesting.core';
++
++const STREAM_NODES: QaNode[] = [
++  { id: 'SPLIT', title: '按窗口长度顺序切段', reference: 'FLOW_QA_SPLIT_CHUNKS', ins: ['qid'], outs: ['question', 'choices', 'answerKey', 'segments'] },
++  { id: 'STREAM', title: '逐段读并滚动更新笔记', reference: 'FLOW_QA_STREAM_READ', ins: ['segments', 'question', 'choices', 'idleLimit'], outs: ['memo', 'segCount', 'segInfo'] },
++  { id: 'DECIDE', title: '按笔记做单选裁决', reference: 'FLOW_QA_DECIDE_MEMO', ins: ['memo', 'question', 'choices', 'answerKey'], outs: ['answer', 'correct'] },
++];
++const STREAM_ROUTES: Array<[string, string]> = [['start', 'SPLIT'], ['SPLIT', 'STREAM'], ['STREAM', 'DECIDE'], ['DECIDE', 'end']];
++
++export const QA_CASES: QaCase[] = [
++  {
++    qid: 'Q01',
++    no: 'Q01',
++    name: '定位失败转选项',
++    flowId: `${NS}/FLOW_QA_Q01`,
++    nodes: [
++      { id: 'Q01_SPLIT', title: '载入并切段', reference: 'FLOW_QA_SPLIT', ins: ['qid'], outs: ['question', 'choices', 'answerKey', 'segments'] },
++      { id: 'Q01_LOCATE', title: '实体定位尝试', reference: 'FLOW_QA_LOCATE', ins: ['question', 'segments'], outs: ['locateReport', 'usable', 'propositions'] },
++      { id: 'Q01_HYPOTHESIZE', title: '选项压成命题', reference: 'FLOW_QA_HYPOTHESIZE', ins: ['question', 'choices'], outs: ['propositions'] },
++      { id: 'Q01_GATHER', title: '分区取证', reference: 'FLOW_QA_GATHER', ins: ['propositions', 'segments'], outs: ['evidence'] },
++      { id: 'Q01_DECIDE', title: '裁决与判分', reference: 'FLOW_QA_DECIDE', ins: ['question', 'choices', 'evidence', 'answerKey'], outs: ['answer', 'correct'] },
++    ],
++    routes: [['start', 'Q01_SPLIT'], ['Q01_SPLIT', 'Q01_LOCATE'], ['Q01_LOCATE', 'Q01_GATHER'], ['Q01_LOCATE', 'Q01_HYPOTHESIZE'], ['Q01_HYPOTHESIZE', 'Q01_GATHER'], ['Q01_GATHER', 'Q01_DECIDE'], ['Q01_DECIDE', 'end']],
++  },
++  {
++    qid: 'Q02',
++    no: 'Q02',
++    name: '多文档摘要后裁决',
++    flowId: `${NS}/FLOW_QA_Q02`,
++    nodes: [
++      { id: 'Q02_SPLIT', title: '按文档分册切段', reference: 'FLOW_QA_SPLIT_DOCS', ins: ['qid'], outs: ['question', 'choices', 'answerKey', 'segments'] },
++      { id: 'Q02_SUMMARIZE', title: '逐份文档结构化摘要', reference: 'FLOW_QA_SUMMARIZE', ins: ['segments'], outs: ['bookSummaries', 'digest'] },
++      { id: 'Q02_HYPOTHESIZE', title: '选项压成可证伪命题', reference: 'FLOW_QA_HYPOTHESIZE_LITERAL', ins: ['question', 'choices'], outs: ['propositions'] },
++      { id: 'Q02_GATHER', title: '按命题回原文取证', reference: 'FLOW_QA_GATHER_STATS', ins: ['propositions', 'segments'], outs: ['evidence', 'statsTable'] },
++      { id: 'Q02_FUSE', title: '摘要与证据合成', reference: 'FLOW_QA_FUSE', ins: ['evidence', 'digest', 'statsTable'], outs: ['evidence'] },
++      { id: 'Q02_DECIDE', title: '裁决与判分', reference: 'FLOW_QA_DECIDE_SCOPED', ins: ['question', 'choices', 'evidence', 'answerKey'], outs: ['answer', 'correct'] },
++    ],
++    routes: [['start', 'Q02_SPLIT'], ['Q02_SPLIT', 'Q02_SUMMARIZE'], ['Q02_SUMMARIZE', 'Q02_HYPOTHESIZE'], ['Q02_HYPOTHESIZE', 'Q02_GATHER'], ['Q02_GATHER', 'Q02_FUSE'], ['Q02_FUSE', 'Q02_DECIDE'], ['Q02_DECIDE', 'end']],
++  },
++  {
++    qid: 'Q03',
++    no: 'Q03',
++    name: '代码仓题（超窗通用底座）',
++    flowId: `${NS}/FLOW_QA_STREAM`,
++    stream: true,
++    nodes: STREAM_NODES,
++    routes: STREAM_ROUTES,
++  },
++  {
++    qid: 'Q04',
++    no: 'Q04',
++    name: '表格题：列投影 → 数值扫描 → 裁决',
++    flowId: `${NS}/FLOW_QA_TABLE`,
++    nodes: [
++      { id: 'PROJECT', title: '认表头并投影出窄表', reference: 'FLOW_QA_PROJECT_COLS', ins: ['qid'], outs: ['question', 'choices', 'answerKey', 'segments', 'colInfo'] },
++      { id: 'SCAN', title: '扫描窄表的数值极值（纯计算）', reference: 'FLOW_QA_TABLE_SCAN', ins: ['segments'], outs: ['memo', 'facts', 'segInfo'] },
++      { id: 'DECIDE', title: '按笔记做单选裁决', reference: 'FLOW_QA_DECIDE_MEMO', ins: ['memo', 'question', 'choices', 'answerKey'], outs: ['answer', 'correct'] },
++    ],
++    routes: [['start', 'PROJECT'], ['PROJECT', 'SCAN'], ['SCAN', 'DECIDE'], ['DECIDE', 'end']],
++  },
++  {
++    qid: 'Q05',
++    no: 'Q05',
++    name: '多文档对照：切实体 → 探针 → 分桶 → 裁决',
++    flowId: `${NS}/FLOW_QA_Q05`,
++    nodes: [
++      { id: 'SPLIT', title: '按题干实体切分材料（纯代码）', reference: 'FLOW_QA_SPLIT_ENTITY', ins: ['qid'], outs: ['question', 'choices', 'answerKey', 'segments', 'books'] },
++      { id: 'PROBE', title: '四个选项翻译成原文检索词', reference: 'FLOW_QA_PROBE_BUILD', ins: ['question', 'choices'], outs: ['propositions'] },
++      { id: 'GATHER', title: '按命题 × 文档分桶取证（纯代码）', reference: 'FLOW_QA_GATHER_BUCKETS', ins: ['propositions', 'segments'], outs: ['memo', 'statsTable'] },
++      { id: 'DECIDE', title: '并排对照两家做单选裁决', reference: 'FLOW_QA_DECIDE_COMMON', ins: ['memo', 'question', 'choices', 'answerKey'], outs: ['answer', 'correct'] },
++    ],
++    routes: [['start', 'SPLIT'], ['SPLIT', 'PROBE'], ['PROBE', 'GATHER'], ['GATHER', 'DECIDE'], ['DECIDE', 'end']],
++  },
++  {
++    qid: 'Q06',
++    no: 'Q06',
++    name: '用户手册题（超窗通用底座）',
++    flowId: `${NS}/FLOW_QA_STREAM`,
++    stream: true,
++    nodes: STREAM_NODES,
++    routes: STREAM_ROUTES,
++  },
++  {
++    qid: 'Q07',
++    no: 'Q07',
++    name: '排除题：探针 → 因果句取证 → 排除裁决',
++    flowId: `${NS}/FLOW_QA_Q07`,
++    nodes: [
++      { id: 'SPLIT', title: '按 15 万字符顺序切段（纯代码）', reference: 'FLOW_QA_SPLIT_CHUNKS', ins: ['qid'], outs: ['question', 'choices', 'answerKey', 'segments'] },
++      { id: 'PROBE', title: '四个选项翻译成原文检索词', reference: 'FLOW_QA_PROBE_BUILD', ins: ['question', 'choices'], outs: ['propositions'] },
++      { id: 'GATHER', title: '按选项收集因果句（纯代码）', reference: 'FLOW_QA_GATHER_CAUSE', ins: ['propositions', 'segments'], outs: ['memo', 'statsTable'] },
++      { id: 'DECIDE', title: '排除法裁决：判哪一项没被当成原因', reference: 'FLOW_QA_DECIDE_NOT', ins: ['memo', 'question', 'choices', 'answerKey', 'statsTable'], outs: ['answer', 'correct', 'verdict'] },
++    ],
++    routes: [['start', 'SPLIT'], ['SPLIT', 'PROBE'], ['PROBE', 'GATHER'], ['GATHER', 'DECIDE'], ['DECIDE', 'end']],
++  },
++  {
++    qid: 'Q08',
++    no: 'Q08',
++    name: '相机说明书题（超窗通用底座）',
++    flowId: `${NS}/FLOW_QA_STREAM`,
++    stream: true,
++    nodes: STREAM_NODES,
++    routes: STREAM_ROUTES,
++  },
++  {
++    qid: 'Q09',
++    no: 'Q09',
++    name: '矛盾题：全库楼层扫描 → 描述矛盾裁决',
++    flowId: `${NS}/FLOW_QA_Q09`,
++    nodes: [
++      { id: 'SPLIT', title: '按 15 万字符顺序切段（纯代码）', reference: 'FLOW_QA_SPLIT_CHUNKS', ins: ['qid'], outs: ['question', 'choices', 'answerKey', 'segments'] },
++      { id: 'SCAN', title: '全库楼层提及扫描（纯代码）', reference: 'FLOW_QA_ENTITY_SCAN', ins: ['question', 'segments'], outs: ['memo', 'statsTable'] },
++      { id: 'DECIDE', title: '矛盾裁决：判同一住处是否前后不一致', reference: 'FLOW_QA_DECIDE_CONFLICT', ins: ['memo', 'question', 'choices', 'answerKey', 'statsTable'], outs: ['answer', 'correct', 'verdict'] },
++    ],
++    routes: [['start', 'SPLIT'], ['SPLIT', 'SCAN'], ['SCAN', 'DECIDE'], ['DECIDE', 'end']],
++  },
++  {
++    qid: 'Q10',
++    no: 'Q10',
++    name: '跨年数值题：占比三元组扫描 → 差值裁决',
++    flowId: `${NS}/FLOW_QA_Q10`,
++    nodes: [
++      { id: 'SPLIT', title: '按 15 万字符顺序切段（纯代码）', reference: 'FLOW_QA_SPLIT_CHUNKS', ins: ['qid'], outs: ['question', 'choices', 'answerKey', 'segments'] },
++      { id: 'NUMSCAN', title: '扫两地年报的占比三元组（纯代码）', reference: 'FLOW_QA_NUM_SCAN', ins: ['segments'], outs: ['stats', 'memo'] },
++      { id: 'CALC', title: '算年份差值并匹配选项', reference: 'FLOW_QA_CALC_DECIDE', ins: ['stats', 'memo', 'question', 'choices', 'answerKey'], outs: ['answer', 'correct', 'verdict'] },
++    ],
++    routes: [['start', 'SPLIT'], ['SPLIT', 'NUMSCAN'], ['NUMSCAN', 'CALC'], ['CALC', 'end']],
++  },
++];
++
++const COLORS = ['#5cdbd3', '#95de64', '#ffa940', '#b37feb', '#ffd666', '#69c0ff', '#ff9c6e', '#87e8de', '#d3adf7', '#ffadd2'];
++
++const clone = <T,>(o: T): T => JSON.parse(JSON.stringify(o));
++const pseudoField = (name: string) => ({ notes: name, name, length: '256', type: 'String', fieldTitle: name, editable: false, notnull: false });
++
++const makeElement = (id: string, title: string, x: number, y: number, fields: any[], color: string) => {
++  const t: any = clone(user_excel_test.elements[1]);
++  t.id = id;
++  t.name = title;
++  t.x = x;
++  t.y = y;
++  t.color = color;
++  const d = t.pendant.data.detail;
++  d.id = id;
++  d.model.id = id;
++  d.model.name = id;
++  d.model.modelTitle = title;
++  d.model.fields = fields;
++  d.model.pk = fields.length > 0 ? [fields[0].name] : ['id'];
++  d.component.id = id;
++  d.component.modelId = id;
++  d.component.x = x;
++  d.component.y = y;
++  d.fields = fields.map((field) => ({ field }));
++  delete d.skill;
++  return t;
++};
++
++const makeLink = (id: string, name: string, from: string, to: string, p1: { x: number; y: number }, p2: { x: number; y: number }) => {
++  const t: any = clone(user_excel_test.links[0]);
++  t.id = id;
++  t.name = name;
++  t.points = [p1, p2];
++  t.fromElementId = from;
++  t.toElementId = to;
++  t.pendant.data.detail.id = id;
++  t.pendant.data.detail.relation.id = id;
++  t.pendant.data.detail.relation.modelMainId = from;
++  t.pendant.data.detail.relation.modelRelatedId = to;
++  t.pendant.data.detail.link.id = id;
++  t.pendant.data.detail.link.relationId = id;
++  return t;
++};
++
++/** 把一道题的流程结构摊成画布上的节点与连线 */
++export const buildView = (qid: string) => {
++  const item = QA_CASES.find((c) => c.qid === qid) ?? QA_CASES[0];
++  const gapX = 330;
++  const baseX = 80;
++  const baseY = 240;
++
++  const pos: Record<string, { x: number; y: number }> = {};
++  item.nodes.forEach((n, i) => {
++    pos[n.id] = { x: baseX + i * gapX, y: baseY };
++  });
++
++  const elements = item.nodes.map((n, i) => {
++    const fields = [...n.ins, ...n.outs].map(pseudoField);
++    return makeElement(n.id, n.title, pos[n.id].x, pos[n.id].y, fields, COLORS[i % COLORS.length]);
++  });
++
++  const links = item.routes
++    .filter(([from, to]) => from !== 'start' && to !== 'end' && pos[from] && pos[to])
++    .map(([from, to], i) =>
++      makeLink(
++        `link_${item.qid}_${i}`,
++        `${from} → ${to}`,
++        from,
++        to,
++        { x: pos[from].x + 125, y: pos[from].y + 37 },
++        { x: pos[to].x, y: pos[to].y + 37 },
++      ),
++    );
++
++  return { id: item.qid, elements, links };
++};
+-- 
+2.55.0.windows.2
+
