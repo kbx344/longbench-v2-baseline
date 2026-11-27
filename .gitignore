@@ -25,3 +25,32 @@ __pycache__/
 .idea/
 *.tmp
 ~$*
+*/.vs/
+.vs/
+
+# ===== 密钥（绝对不提交） =====
+notes/.llm-key
+*.llm-key
+**/.llm-key
+
+# ===== 任务大文件（含数据集原文，可由 data/ + scripts 重建，不提交） =====
+notes/readings/
+notes/repair-set.json
+notes/cp.txt
+
+# ===== 录屏抽帧与视频素材 =====
+_ppt_extract/
+*.mp4
+
+# ===== 外部克隆的工程仓库（各自独立 git，不在本仓库嵌套提交） =====
+rsi-flow/
+rsi-flow-platform/
+rsi-flow-spring-boot/
+rsi-flow-visual/
+
+# ===== 前端/后端运行临时日志 =====
+notes/_frontend.log
+notes/_frontend.err.log
+notes/_q03-run.out
+notes/_q03-run.err
+notes/_run_q03.bat

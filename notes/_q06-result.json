@@ -1,0 +1,15 @@
+{
+  "result": true,
+  "status": 200,
+  "message": "请求成功",
+  "timestamp": 1795712268870,
+  "data": {
+    "value": {
+      "answer": "D",
+      "correct": "false",
+      "verdict": "{\"answer\":\"D\",\"reason\":\"第35章中，Poirot指出Knighton和Mason在Van Aldin手下任职时间都“exactly two months”，且两人的首字母都为“K”，并称这是一个“curious coincidence”。这种证词与身份信息的巧合引起了Poirot的怀疑，成为揭开真相的关键线索。\"}",
+      "segInfo": "3/3",
+      "memo": "C（女仆离车及去向）：\n\n第10章，Katherine晚餐后经过包厢：\n“The maid was not there.”\n\n第11章，警察说明：\n“The maid was left behind in Paris.”\n\n列车员称，女主人说女仆留在巴黎，只需铺一张床：\n“She said to me that she had been obliged to leave her maid behind in Paris, so that I only need make up one berth.”\n\n第13章，Knighton称在巴黎丽兹见到女仆：\n“At the reception desk I saw a woman whom I was quite sure was Mrs Kettering's maid.”\n\n他确认女仆奉命在丽兹等待后续指示。\n\n第14章，Mason称女主人在Gare de Lyon命她下车去丽兹：\n“I was to wait there until I heard from her, she would wire me what she wanted me to do.”\n“I had just time to get my things together and jump out of the train before it started off.”\n\nA（假宝石）：\n\n第22章，Papopolous鉴定伯爵包裹内的红宝石：\n“As an imitation,” said Papopolous, handing them back to Poirot, “they are, as I said, quite excellent.”\n\n第24章，Poirot说明伯爵的计划：\n“He provided himself with an exact duplicate.”\n\n第35章，Poirot说明Knighton带走了装红宝石的珠宝盒：\n“Knighton drops off the train, taking the jewel-case containing the rubies with him.”\n\nD（两名嫌疑人的证词）：\n\n第35章，Poirot指出Knighton与Mason在Van Aldin手下的任职时间都恰为两个月，首字母也相同：\n“First, that by a curious coincidence he, too, had been exactly two months in your service. Secondly, his initial letter was the same - 'K.'”"
+    }
+  }
+}

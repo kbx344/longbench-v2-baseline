@@ -1,0 +1,15 @@
+{
+  "result": true,
+  "status": 200,
+  "message": "请求成功",
+  "timestamp": 1795752977147,
+  "data": {
+    "value": {
+      "answer": "B",
+      "correct": "true",
+      "verdict": "{\"answer\":\"B\",\"reason\":\"说明书写明色温可设置范围为[2500K]至[10000K]，因此按下[WB]后不能将色温设为2400K。\"}",
+      "segInfo": "5/5",
+      "memo": "- A（第207页）：“The burst rate will become lower during recording but pictures can continue to be taken until the card becomes full.”\n- B（第298页）：“You can set a color temperature from [2500K] to [10000K].”\n- C（第107、317、517页）：“Set [Touch Tab] to [ON] in [Touch Settings] in the [Custom] ([Operation]) menu.”\n- C（第457页）：“There are the following restrictions when connected via HDMI and [Info Display] is set to [ON]:”  \n  “[Touch Tab] is not available.”\n- C（第762页）：[Custom] → [Operation] → [Touch Settings] 下的 [Touch Tab] 默认值为 [OFF]。\n- D（第26页）：“You can prevent the writing and deleting of data by setting the write-protect switch (A) on the SD card to “LOCK”.”\n- D（第26页）：“The data stored on a card may be damaged due to electromagnetic waves, static electricity or a failure of the camera or card.”\n- D（第735页）：“Recorded data may be damaged or lost if the camera breaks down due to inappropriate handling.”"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "result": true,
+  "status": 200,
+  "message": "请求成功",
+  "timestamp": 1795710998585,
+  "data": {
+    "value": {
+      "statsTable": "【每格命中数】\nA × Lilium：0 处  ⚠ 完全无对应表述\nA × VTOL：0 处  ⚠ 完全无对应表述\nA × Archer Aviation：0 处  ⚠ 完全无对应表述\nB × Lilium：0 处  ⚠ 完全无对应表述\nB × VTOL：0 处  ⚠ 完全无对应表述\nB × Archer Aviation：0 处  ⚠ 完全无对应表述\nC × Lilium：0 处  ⚠ 完全无对应表述\nC × VTOL：0 处  ⚠ 完全无对应表述\nC × Archer Aviation：0 处  ⚠ 完全无对应表述\nD × Lilium：0 处  ⚠ 完全无对应表述\nD × VTOL：0 处  ⚠ 完全无对应表述\nD × Archer Aviation：1 处（power system 1）\n",
+      "books": "Lilium/VTOL/Archer Aviation",
+      "answer": "D",
+      "correct": "true",
+      "verdict": "{\"answer\":\"D\",\"reason\":\"笔记中只有 Archer Aviation 在“Power system”维度有命中，涉及 electric power systems；Lilium 在该维度命中 0 处。其他三个维度两家公司都没有对应表述，因此 D 是唯一出现两家记录不对称的选项。\"}",
+      "memo": "【维度 × 文档 对照片段】每格独立配额，两家都有片段才能判断是否共同\n\n【A】Listing method\n探针：listing method\n- Lilium：命中 0 处\n    ⚠ 该维度在本文档中完全无对应表述\n- VTOL：命中 0 处\n    ⚠ 该维度在本文档中完全无对应表述\n- Archer Aviation：命中 0 处\n    ⚠ 该维度在本文档中完全无对应表述\n\n【B】High R&D investment\n探针：high r&d investment\n- Lilium：命中 0 处\n    ⚠ 该维度在本文档中完全无对应表述\n- VTOL：命中 0 处\n    ⚠ 该维度在本文档中完全无对应表述\n- Archer Aviation：命中 0 处\n    ⚠ 该维度在本文档中完全无对应表述\n\n【C】Business landscape\n探针：business landscape\n- Lilium：命中 0 处\n    ⚠ 该维度在本文档中完全无对应表述\n- VTOL：命中 0 处\n    ⚠ 该维度在本文档中完全无对应表述\n- Archer Aviation：命中 0 处\n    ⚠ 该维度在本文档中完全无对应表述\n\n【D】Power system\n探针：power system\n- Lilium：命中 0 处\n    ⚠ 该维度在本文档中完全无对应表述\n- VTOL：命中 0 处\n    ⚠ 该维度在本文档中完全无对应表述\n- Archer Aviation：命中 1 处\n    · [power system] …litary, and defense applications, and key related technology and infrastructure, represents more than $1 trillion of total addressable market opportunity by 2040. We view the underlying secular drivers of this massive total addressable market as the following: ● Unprecedented traffic congestion as the world’s population migrates to cities; ● Performance improvement and cost reductions in electric power systems; and ● Need for a zero-emission transportation solution to sustain growth while minimizing environmental impact. Our go-to-market strategy of both selling aircraft to existing operators, as well as establishing our own operations and direct-to-consumer business, presents a unique opportunity to capture market share. The dual revenue streams have the potential to reinforce each other and catalyze…\n"
+    }
+  }
+}

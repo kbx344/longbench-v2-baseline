@@ -1,0 +1,24 @@
+seg 1/23 70.4s memo=1144
+seg 2/23 31.0s memo=1325
+seg 3/23 22.4s memo=1325
+seg 4/23 22.5s memo=1232
+seg 5/23 14.2s memo=1225
+seg 6/23 120.6s memo=1225
+seg 7/23 17.1s memo=1467
+seg 8/23 16.2s memo=1467
+seg 9/23 64.1s memo=1467
+seg 10/23 31.3s memo=1467
+seg 11/23 18.8s memo=1467
+seg 12/23 30.7s memo=1467
+seg 13/23 16.4s memo=1467
+seg 14/23 50.5s memo=1467
+seg 15/23 28.9s memo=1467
+seg 16/23 29.4s memo=1467
+seg 17 error HTTP 524: {"error":{"message":"openai_error","type":"bad_response_status_code","param":"","code":"bad_response_status_code"}}
+seg 18/23 28.7s memo=1467
+seg 19/23 57.2s memo=1467
+seg 20/23 32.6s memo=1467
+seg 21/23 32.4s memo=1467
+seg 22/23 32.2s memo=1467
+seg 23/23 37.2s memo=1467
+{"answer":"C","reason":"错误在于把每条测例结束后的 AVD 退出和 Docker 测试结束放入 release 函数。依据笔记，release 只在整个 task_worker 进程结束时调用，并不是每条测例结束时调用；而每条测例的环境清理应在 start_sample 的 finally 中完成，才能保证 AVD 在每个测试用例后重启并避免相互影响。"}

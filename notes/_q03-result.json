@@ -1,0 +1,14 @@
+{
+  "result": true,
+  "status": 200,
+  "message": "请求成功",
+  "timestamp": 1795705547297,
+  "data": {
+    "value": {
+      "answer": "C",
+      "correct": "true",
+      "verdict": "{\"answer\":\"C\",\"reason\":\"错误在清理时机：release 是 task_worker 进程结束后执行的清理，不是某个测例结束后；笔记明确指出“注意是整个worker进程结束后，而不是某个测例结束后”。因此在 release 中退出 AVD 不能实现每条测例后重启，且“结束测试 Docker”也不符合 release 的通用职责。\"}",
+      "memo": "笔记：\n\n- “如果想要自己实现一个新的任务环境，只需要继承 Task 类实现，然后在配置文件中指定即可。”\n- `Task` 初始化并保存传入参数：\n  ```python\n  def __init__(self, name: str, concurrency: int = 1, *args, **kwargs):\n      self.name = name\n      self.concurrency = concurrency\n  ```\n- “start_sample：一条测例内的逻辑，其中index是待测的测例的索引，session是Agent的一个代理。”\n  ```python\n  async def start_sample(self, index: int, session: Session) -> TaskOutput:\n  ```\n- “release：task_worker进程结束后需要执行的清理。注意是整个worker进程结束后，而不是某个测例结束后。”\n- “calculate_overall：所有测例测试完以后计算得分，返回格式任意，最终会被保存到overall.json中。”\n  ```python\n  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:\n  ```\n- “每一个 Task Worker 负责一个具体的任务环境”\n- “如果同一个任务想要开多个并发，推荐的做法是开启多个 Task Worker，这样做的好处是可以保证环境互不干扰”\n- `AvalonBench` 继承后调用父类初始化：\n  ```python\n  class AvalonBench(Task):\n      def __init__(...): super().__init__(**configs)\n  ```\n- `OSInteraction.start_sample` 在每条测例的 `finally` 中停止容器：\n  ```python\n  finally:\n      try:\n          container.__del__()\n  ```\n- 容器清理实现：\n  ```python\n  def __del__(self):\n      self.container.stop()\n  ```\n- `calculate_overall` 示例均返回字典：\n  ```python\n  return {\"overall\": overall}\n  ```\n- `DBBench` 的 `release` 删除容器：\n  ```python\n  def release(self):\n      self.container.delete()\n  ```\n- `DBBench.start_sample` 在测例结束时删除数据库：\n  ```python\n  container.execute(f\"drop database `{db}`\")\n  return TaskOutput(...)\n  ```\n- `DBBench.calculate_overall` 遍历所有 `TaskOutput`，按指标计算并返回字典：\n  ```python\n  ret[key] = func(outputs, answers)\n  ```"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "result": true,
+  "status": 200,
+  "message": "请求成功",
+  "timestamp": 1795706147487,
+  "data": {
+    "value": {
+      "answer": "C",
+      "correct": "true",
+      "verdict": "{\"answer\":\"C\",\"reason\":\"笔记明确说明 release 是整个 worker 进程结束后的清理，并且示例中 release 只删除 Docker 容器；没有支持在 release 中退出 AVD，也没有说明应在 release 中结束测试 Docker。每条测例结束后的清理应在测例逻辑中完成，因此该操作按描述不成立。\"}",
+      "segInfo": "11/23",
+      "memo": "笔记：\n\n- 新任务继承并实现 `Task`，名称通常在配置中指定。  \n  原文：“`name`: 任务名称，通常是在config中指定”\n\n- `Task` 构造函数接收 `name`、`concurrency` 并赋给 `self.name`、`self.concurrency`；后者是 worker 内最大并发数。同类任务多并发可启动多个 Task Worker。\n\n- 示例任务继承 `Task` 并调用父类构造函数，未修改 `self.name`。  \n  原文：\n  ```python\n  class DBBench(Task):\n      def __init__(self, **configs):\n          super().__init__(**configs)\n  ```\n\n- `start_sample` 执行单条测例逻辑；框架通过 `concurrency` 限制 worker 内并发。本段示例的 `start_sample` 未检查系统剩余内存或等待内存。\n\n- 示例任务在构造函数中创建 Docker 容器，并在每条测例结束时删除数据库。  \n  原文：\n  ```python\n  self.container = Container()\n  ```\n  原文：\n  ```python\n  container.execute(f\"drop database `{db}`\")\n  ```\n\n- `release` 是整个 worker 进程结束后的清理，不是单个测例结束后的清理；Task Worker 关闭时调用 `self.task.release()`。示例 `release` 删除容器。  \n  原文：\n  ```python\n  def release(self):\n      self.container.delete()\n  ```\n\n- `Container.delete` 停止 Docker 容器并标记为已删除；容器创建时设置 `remove=True`。  \n  原文：\n  ```python\n  def delete(self):\n      self.container.stop()\n      self.deleted = True\n  ```\n\n- `calculate_overall` 在全部测例完成后计算指标并返回字典；任务客户端将结果通过接口提交，整体结果包含 JSON 可序列化内容。  \n  原文：\n  ```python\n  return ret\n  ```\n  原文：\n  ```python\n  ret = {\n      \"total\": len(results),\n      \"validation\": statistics,\n  }\n  ```"
+    }
+  }
+}

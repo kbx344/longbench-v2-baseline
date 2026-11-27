@@ -1,0 +1,16 @@
+{
+  "result": true,
+  "status": 200,
+  "message": "请求成功",
+  "timestamp": 1795709039525,
+  "data": {
+    "value": {
+      "answer": "A",
+      "correct": "false",
+      "verdict": "{\"answer\":\"A\",\"reason\":\"笔记明确记录2022-09-02 09:33:00的波动幅度最大，为0.205 Yuan（101.915 − 101.710）；四个选项中只有A与该日期对应，其他选项日期分别为7月17日、8月15日和6月23日。\"}",
+      "segInfo": "9/9",
+      "memo": "2022-09-02 09:33:00 波动幅度最大：0.205 Yuan（101.915 − 101.710）  \n原文：“2022-09-02 09:33:00 | 101.915 | 101.710”",
+      "colInfo": "# 列：Date | Highest Price (Yuan) | Lowest Price (Yuan)"
+    }
+  }
+}

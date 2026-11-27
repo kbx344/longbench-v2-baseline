@@ -1,0 +1,16 @@
+{
+  "result": true,
+  "status": 200,
+  "message": "请求成功",
+  "timestamp": 1795709665455,
+  "data": {
+    "value": {
+      "answer": "C",
+      "correct": "true",
+      "verdict": "{\"answer\":\"C\",\"reason\":\"笔记记录 Highest Price 与 Lowest Price 的最大差值为 0.32，发生于 2022-08-15 09:30:00；这支持该时刻价格波动最大。\"}",
+      "segInfo": "31951 行 / 3 列",
+      "memo": "# 数据范围 2022-03-04 09:30:00 ~ 2022-09-02 15:15:00，共 31951 行\n# 列：Date | Highest Price (Yuan) | Lowest Price (Yuan)\n\n[单列极值]\nHighest Price (Yuan) 最大 102.155 @ 2022-08-16 13:48:00\nHighest Price (Yuan) 最小 99.55 @ 2022-03-11 10:38:00\nLowest Price (Yuan) 最大 102.135 @ 2022-08-18 13:32:00\nLowest Price (Yuan) 最小 99.53 @ 2022-03-11 10:45:00\n\n[列差值极值]\nHighest Price (Yuan) - Lowest Price (Yuan) 最大 0.32 @ 2022-08-15 09:30:00\nHighest Price (Yuan) - Lowest Price (Yuan) 最小 0 @ 2022-03-04 11:05:00\n\n[差值 top1]\n1. 0.32  Highest Price (Yuan) - Lowest Price (Yuan) 最大差 @ 2022-08-15 09:30:00\n",
+      "colInfo": "# 列：Date | Highest Price (Yuan) | Lowest Price (Yuan)"
+    }
+  }
+}

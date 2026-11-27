@@ -1,0 +1,15 @@
+{
+  "result": true,
+  "status": 200,
+  "message": "请求成功",
+  "timestamp": 1795762835623,
+  "data": {
+    "value": {
+      "answer": "D",
+      "correct": "true",
+      "stats": "{\"2023\":37,\"2024\":41}",
+      "verdict": "2023 其余国家 37%；2024 其余国家 41%；2024 - 2023 = +4%，与选项 D（4.0%）相等",
+      "memo": "【占比三元组扫描】句式：factories in Vietnam, China and Cambodia manufactured approximately X%, Y% and Z%\n\n[1] S0@18266 | 年份: 2023 | 越南 29% 中国 18% 柬埔寨 16% | 三项合计 63% | 其余国家 37%\n    ies located in 31 countries. For fiscal 2023, NIKE Brand apparel finished goods were manufactured by 55 contract manufacturers, many of which operate multiple factories. The largest single finished goods apparel factory accounted for approximately 8% of total fiscal 2023 NIKE Brand apparel production. For fiscal 2023, factories in Vietnam, China and Cambodia manufactured approximately 29%, 18% and 16% 2023 FORM 10-K 3 of total NIKE Brand apparel, respectively. For fiscal 2023, one apparel contract manufacturer accounte\n\n[2] S2@94086 | 年份: 2024 | 越南 28% 中国 16% 柬埔寨 15% | 三项合计 59% | 其余国家 41%\n    ies located in 33 countries. For fiscal 2024, NIKE Brand apparel finished goods were manufactured by 68 contract manufacturers, many of which operate multiple factories. The largest single finished goods apparel factory accounted for approximately 9% of total fiscal 2024 NIKE Brand apparel production. For fiscal 2024, factories in Vietnam, China and Cambodia manufactured approximately 28%, 16% and 15% 2024 FORM 10-K 3 of total NIKE Brand apparel, respectively. For fiscal 2024, one apparel contract manufacturer accounte\n\n【旁证：成品服装工厂家数与所在国数】\n  · S0 | 年份: 2023 | 工厂 291 家，分布于 31 国\n  · S2 | 年份: 2024 | 工厂 285 家，分布于 33 国\n"
+    }
+  }
+}

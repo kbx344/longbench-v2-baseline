@@ -1,0 +1,609 @@
+chunks total = 23, chunk chars = 150000
+
+=== seg 1 (70.4s, 149948 chars in) ===
+- 扩展任务需要继承 `Task` 并实现接口；`name` 是任务名称，通常在配置中指定。示例中通过 `super().__init__(name="virtual-task", *args, **kwargs)` 设置任务名。
+  > “If you want to implement a new task environment, you only need to inherit and implement the Task class, then specify it in the configuration file.”
+
+- `start_sample` 负责单条测例逻辑，由 Task Worker 创建异步任务执行；正常完成时返回 `TaskSampleExecutionResult(status=SampleStatus.COMPLETED, ...)`。本段未出现 `start_stample`，也未出现基于系统剩余内存的等待逻辑。
+
+- `release` 在 task_worker 进程关闭时调用，不是每条测例结束时调用。
+  > “release: Cleanup tasks that need to be executed after the task_worker process ends. Note that this is after the entire worker process ends, not after a particular sample ends.”
+
+- `calculate_overall` 在所有测例结果收集完成后由 `Assigner` 调用，返回值会写入 `overall.json`；返回格式可以是任意 JSON 可序列化结构。
+  > “calculate_overall: Calculates the score after all samples have been tested; the return format is arbitrary and will eventually be saved to `overall.json`.”
+
+- Task 的 `concurrency` 表示单个 Worker 支持的最大并发数。框架通过多个 Task Worker 或 Task 的并发配置控制并发；本段未出现按剩余内存动态控制并发的实现。
+
+- Docker Worker 由 `src.start_task` 使用 `docker run --rm` 启动，容器结束后自动移除；本段未出现 AVD 的创建、重启或退出代码，也未出现结束测试 Docker 的 `release` 实现。
+
+=== seg 2 (31.0s, 82956 chars in) ===
+- 扩展任务需要继承 `Task` 并实现接口；文档原文：“If you want to implement a new task environment, you only need to inherit and implement the Task class, then specify it in the configuration file.”本段示例定义 `class KnowledgeGraph(Task)`，初始化时调用 `super().__init__(**configs)`，未直接修改 `self.name`。
+- `start_sample` 负责单条测例逻辑，由 Task Worker 创建异步任务执行；本段定义为 `async def start_sample(self, index: SampleIndex, session: Session) -> TaskSampleExecutionResult`，通过 `TaskSampleExecutionResult(status=..., result=...)` 返回结果。本段未出现 `start_stample`，也未出现基于系统剩余内存的等待逻辑。
+- `release` 在 task_worker 进程关闭时调用，不是每条测例结束时调用。原文：“release: Cleanup tasks that need to be executed after the task_worker process ends. Note that this is after the entire worker process ends, not after a particular sample ends.”本段未定义 `release`，未出现 AVD 重启、退出或销毁逻辑。
+- `calculate_overall` 在所有测例结果收集完成后由 `Assigner` 调用，返回值会写入 `overall.json`；返回格式可以是任意 JSON 可序列化结构。原文：“calculate_overall: Calculates the score after all samples have been tested; the return format is arbitrary and will eventually be saved to `overall.json`.”本段 `KnowledgeGraph.calculate_overall` 汇总结果并返回包含 `main`、`F1`、`EM`、`executability` 的字典。
+- Task 的 `concurrency` 表示单个 Worker 支持的最大并发数。框架通过多个 Task Worker 或 Task 的并发配置控制并发；本段未出现按剩余内存动态控制并发的实现。
+- Docker Worker 由 `src.start_task` 使用 `docker run --rm` 启动，容器结束后自动移除；本段未出现 Docker 或 AVD 的创建、重启和销毁代码。
+
+=== seg 3 (22.4s, 1137427 chars in) ===
+- 扩展任务需要继承 `Task` 并实现接口；文档原文：“If you want to implement a new task environment, you only need to inherit and implement the Task class, then specify it in the configuration file.”本段示例定义 `class KnowledgeGraph(Task)`，初始化时调用 `super().__init__(**configs)`，未直接修改 `self.name`。
+- `start_sample` 负责单条测例逻辑，由 Task Worker 创建异步任务执行；本段定义为 `async def start_sample(self, index: SampleIndex, session: Session) -> TaskSampleExecutionResult`，通过 `TaskSampleExecutionResult(status=..., result=...)` 返回结果。本段未出现 `start_stample`，也未出现基于系统剩余内存的等待逻辑。
+- `release` 在 task_worker 进程关闭时调用，不是每条测例结束时调用。原文：“release: Cleanup tasks that need to be executed after the task_worker process ends. Note that this is after the entire worker process ends, not after a particular sample ends.”本段未定义 `release`，未出现 AVD 重启、退出或销毁逻辑。
+- `calculate_overall` 在所有测例结果收集完成后由 `Assigner` 调用，返回值会写入 `overall.json`；返回格式可以是任意 JSON 可序列化结构。原文：“calculate_overall: Calculates the score after all samples have been tested; the return format is arbitrary and will eventually be saved to `overall.json`.”本段 `KnowledgeGraph.calculate_overall` 汇总结果并返回包含 `main`、`F1`、`EM`、`executability` 的字典。
+- Task 的 `concurrency` 表示单个 Worker 支持的最大并发数。框架通过多个 Task Worker 或 Task 的并发配置控制并发；本段未出现按剩余内存动态控制并发的实现。
+- Docker Worker 由 `src.start_task` 使用 `docker run --rm` 启动，容器结束后自动移除；本段未出现 Docker 或 AVD 的创建、重启和销毁代码。
+
+=== seg 4 (22.5s, 149999 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档：“you only need to inherit and implement the Task class, then specify it in the configuration file.”本段 `ALFWorld(Task)` 初始化调用 `super().__init__(**kwargs)`，未直接修改 `self.name`。
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。本段在函数内创建局部环境：
+  ```python
+  env = SingleAlfredTWEnv(self.config, data_item)
+  print("initializing env")
+  env = env.init_env(batch_size=1)
+  ```
+  随后调用 `await self.alfworld_run(session, env)`；其中执行 `env.reset()` 和交互循环。本段未出现 `start_stample` 或按剩余内存等待的逻辑。
+- `release` 在整个 task_worker 进程结束时调用，不是每条测例结束时调用。本段实现：
+  ```python
+  def release(self):
+      if getattr(self, "env", None) is not None:
+          del self.env
+  ```
+  `start_sample` 的环境保存在局部变量 `env`，未赋给 `self.env`；未见逐测例显式关闭环境。
+- `calculate_overall` 在所有测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构，最终写入 `overall.json`。此前 KnowledgeGraph 汇总 `main`、`F1`、`EM`、`executability`；本段汇总总数、通过数、错误数和成功率：
+  ```python
+  overall["success_rate"] = overall["pass"] / overall["total"] if overall["total"] else 0
+  return {
+      "overall": overall,
+  ```
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未见动态内存控制。
+- 此前 `src.start_task` 通过 `docker run --rm` 启动 Worker，容器结束后自动移除。本段未见 Docker 或 AVD 创建、重启、销毁代码。
+
+=== seg 5 (14.2s, 149983 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)` 与本段 `WebShop(Task)` 均调用 `super().__init__`，未直接修改 `self.name`：
+  ```python
+  class WebShop(Task):
+      def __init__(self, **configs):
+          super().__init__(**configs)
+  ```
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`/`TaskOutput`。本段复用实例环境并按测例索引重置：
+  ```python
+  async def start_sample(self, index: int, session: Session) -> TaskOutput:
+      env = self.env
+      env.reset(index)
+  ```
+  此前 ALFWorld 在函数内创建局部环境。各段均未出现 `start_stample` 或依据剩余内存等待、动态调整并发的逻辑。
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；本段 `WebShop` 未实现 `release`，环境在初始化时创建：
+  ```python
+  self.env = WebAgentTextEnv(observation_mode="text", human_goals=True)
+  ```
+  WebShop 环境封装另有 `close()` 调用 `self.env.close()`，但任务类未调用。此前 `src.start_task` 通过 `docker run --rm` 启动 Worker，容器结束后自动移除；未见 AVD 创建、重启或销毁代码。
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段计算平均奖励：
+  ```python
+  return {
+      "reward": factory("reward")(results),
+  }
+  ```
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未见基于内存的并发控制。
+
+=== seg 6 (120.6s, 149937 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)` 与本段 `WebShop(Task)` 均调用 `super().__init__`，未直接修改 `self.name`：
+  ```python
+  class WebShop(Task):
+      def __init__(self, **configs):
+          super().__init__(**configs)
+  ```
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`/`TaskOutput`。本段复用实例环境并按测例索引重置：
+  ```python
+  async def start_sample(self, index: int, session: Session) -> TaskOutput:
+      env = self.env
+      env.reset(index)
+  ```
+  此前 ALFWorld 在函数内创建局部环境。各段均未出现 `start_stample` 或依据剩余内存等待、动态调整并发的逻辑。
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；本段 `WebShop` 未实现 `release`，环境在初始化时创建：
+  ```python
+  self.env = WebAgentTextEnv(observation_mode="text", human_goals=True)
+  ```
+  WebShop 环境封装另有 `close()` 调用 `self.env.close()`，但任务类未调用。此前 `src.start_task` 通过 `docker run --rm` 启动 Worker，容器结束后自动移除；未见 AVD 创建、重启或销毁代码。
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段计算平均奖励：
+  ```python
+  return {
+      "reward": factory("reward")(results),
+  }
+  ```
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未见基于内存的并发控制。
+
+=== seg 7 (17.1s, 149988 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)`、`WebShop(Task)`、本段的 `AvalonBench(Task)`、`Mind2Web(Task)`、`OSInteraction(Task)` 和 `CardGame(Task)` 均调用 `super().__init__`，未直接修改任务类的 `self.name`：
+  ```python
+  class AvalonBench(Task):
+      def __init__(self, num_players, agent_list, discussion, data_file, **configs):
+          super().__init__(**configs)
+  ```
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。此前环境可在函数内创建或按索引重置。本段 `OSInteraction.start_sample` 为每条测例创建容器：
+  ```python
+  print("init container")
+  container = Container(config.image)
+  print("init container ok")
+  ```
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；WebShop 未实现 `release`。本段未出现任务类 `release`，但 `OSInteraction.start_sample` 在 `finally` 中停止该测例的容器：
+  ```python
+  finally:
+      try:
+          container.__del__()
+  ```
+  `Container.__del__` 调用 `self.container.stop()`；容器创建时设置 `remove=True`。此前 Worker 也通过 `docker run --rm` 启动，容器结束后自动移除。本段未见 AVD 创建、重启或销毁代码。
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段多个任务聚合结果，例如：
+  ```python
+  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:
+      overall = {
+          "total": len([config for config in results if config]),
+  ```
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未出现依据剩余内存等待或动态调整并发的逻辑，也未出现 `start_stample`。
+
+=== seg 8 (16.2s, 149957 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)`、`WebShop(Task)`、本段的 `AvalonBench(Task)`、`Mind2Web(Task)`、`OSInteraction(Task)` 和 `CardGame(Task)` 均调用 `super().__init__`，未直接修改任务类的 `self.name`：
+  ```python
+  class AvalonBench(Task):
+      def __init__(self, num_players, agent_list, discussion, data_file, **configs):
+          super().__init__(**configs)
+  ```
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。此前环境可在函数内创建或按索引重置。本段 `OSInteraction.start_sample` 为每条测例创建容器：
+  ```python
+  print("init container")
+  container = Container(config.image)
+  print("init container ok")
+  ```
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；WebShop 未实现 `release`。本段未出现任务类 `release`，但 `OSInteraction.start_sample` 在 `finally` 中停止该测例的容器：
+  ```python
+  finally:
+      try:
+          container.__del__()
+  ```
+  `Container.__del__` 调用 `self.container.stop()`；容器创建时设置 `remove=True`。此前 Worker 也通过 `docker run --rm` 启动，容器结束后自动移除。本段未见 AVD 创建、重启或销毁代码。
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段多个任务聚合结果，例如：
+  ```python
+  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:
+      overall = {
+          "total": len([config for config in results if config]),
+  ```
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未出现依据剩余内存等待或动态调整并发的逻辑，也未出现 `start_stample`。
+
+=== seg 9 (64.1s, 149779 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)`、`WebShop(Task)`、本段的 `AvalonBench(Task)`、`Mind2Web(Task)`、`OSInteraction(Task)` 和 `CardGame(Task)` 均调用 `super().__init__`，未直接修改任务类的 `self.name`：
+  ```python
+  class AvalonBench(Task):
+      def __init__(self, num_players, agent_list, discussion, data_file, **configs):
+          super().__init__(**configs)
+  ```
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。此前环境可在函数内创建或按索引重置。本段 `OSInteraction.start_sample` 为每条测例创建容器：
+  ```python
+  print("init container")
+  container = Container(config.image)
+  print("init container ok")
+  ```
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；WebShop 未实现 `release`。本段未出现任务类 `release`，但 `OSInteraction.start_sample` 在 `finally` 中停止该测例的容器：
+  ```python
+  finally:
+      try:
+          container.__del__()
+  ```
+  `Container.__del__` 调用 `self.container.stop()`；容器创建时设置 `remove=True`。此前 Worker 也通过 `docker run --rm` 启动，容器结束后自动移除。本段未见 AVD 创建、重启或销毁代码。
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段多个任务聚合结果，例如：
+  ```python
+  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:
+      overall = {
+          "total": len([config for config in results if config]),
+  ```
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未出现依据剩余内存等待或动态调整并发的逻辑，也未出现 `start_stample`。
+
+=== seg 10 (31.3s, 147730 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)`、`WebShop(Task)`、本段的 `AvalonBench(Task)`、`Mind2Web(Task)`、`OSInteraction(Task)` 和 `CardGame(Task)` 均调用 `super().__init__`，未直接修改任务类的 `self.name`：
+  ```python
+  class AvalonBench(Task):
+      def __init__(self, num_players, agent_list, discussion, data_file, **configs):
+          super().__init__(**configs)
+  ```
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。此前环境可在函数内创建或按索引重置。本段 `OSInteraction.start_sample` 为每条测例创建容器：
+  ```python
+  print("init container")
+  container = Container(config.image)
+  print("init container ok")
+  ```
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；WebShop 未实现 `release`。本段未出现任务类 `release`，但 `OSInteraction.start_sample` 在 `finally` 中停止该测例的容器：
+  ```python
+  finally:
+      try:
+          container.__del__()
+  ```
+  `Container.__del__` 调用 `self.container.stop()`；容器创建时设置 `remove=True`。此前 Worker 也通过 `docker run --rm` 启动，容器结束后自动移除。本段未见 AVD 创建、重启或销毁代码。
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段多个任务聚合结果，例如：
+  ```python
+  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:
+      overall = {
+          "total": len([config for config in results if config]),
+  ```
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未出现依据剩余内存等待或动态调整并发的逻辑，也未出现 `start_stample`。
+
+=== seg 11 (18.8s, 149958 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)`、`WebShop(Task)`、本段的 `AvalonBench(Task)`、`Mind2Web(Task)`、`OSInteraction(Task)` 和 `CardGame(Task)` 均调用 `super().__init__`，未直接修改任务类的 `self.name`：
+  ```python
+  class AvalonBench(Task):
+      def __init__(self, num_players, agent_list, discussion, data_file, **configs):
+          super().__init__(**configs)
+  ```
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。此前环境可在函数内创建或按索引重置。本段 `OSInteraction.start_sample` 为每条测例创建容器：
+  ```python
+  print("init container")
+  container = Container(config.image)
+  print("init container ok")
+  ```
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；WebShop 未实现 `release`。本段未出现任务类 `release`，但 `OSInteraction.start_sample` 在 `finally` 中停止该测例的容器：
+  ```python
+  finally:
+      try:
+          container.__del__()
+  ```
+  `Container.__del__` 调用 `self.container.stop()`；容器创建时设置 `remove=True`。此前 Worker 也通过 `docker run --rm` 启动，容器结束后自动移除。本段未见 AVD 创建、重启或销毁代码。
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段多个任务聚合结果，例如：
+  ```python
+  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:
+      overall = {
+          "total": len([config for config in results if config]),
+  ```
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未出现依据剩余内存等待或动态调整并发的逻辑，也未出现 `start_stample`。
+
+=== seg 12 (30.7s, 149425 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)`、`WebShop(Task)`、`AvalonBench(Task)`、`Mind2Web(Task)`、`OSInteraction(Task)` 和 `CardGame(Task)` 均调用 `super().__init__`，未直接修改任务类的 `self.name`：
+  ```python
+  class AvalonBench(Task):
+      def __init__(self, num_players, agent_list, discussion, data_file, **configs):
+          super().__init__(**configs)
+  ```
+
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。此前环境可在函数内创建或按索引重置。本段 `OSInteraction.start_sample` 为每条测例创建容器：
+  ```python
+  print("init container")
+  container = Container(config.image)
+  print("init container ok")
+  ```
+
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；WebShop 未实现 `release`。本段未出现任务类 `release`，但 `OSInteraction.start_sample` 在 `finally` 中停止该测例的容器：
+  ```python
+  finally:
+      try:
+          container.__del__()
+  ```
+  `Container.__del__` 调用 `self.container.stop()`；容器创建时设置 `remove=True`。此前 Worker 也通过 `docker run --rm` 启动，容器结束后自动移除。本段未见 AVD 创建、重启或销毁代码。
+
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段多个任务聚合结果，例如：
+  ```python
+  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:
+      overall = {
+          "total": len([config for config in results if config]),
+  ```
+
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未出现依据剩余内存等待或动态调整并发的逻辑，也未出现 `start_stample`。
+
+=== seg 13 (16.4s, 149995 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)`、`WebShop(Task)`、`AvalonBench(Task)`、`Mind2Web(Task)`、`OSInteraction(Task)` 和 `CardGame(Task)` 均调用 `super().__init__`，未直接修改任务类的 `self.name`：
+  ```python
+  class AvalonBench(Task):
+      def __init__(self, num_players, agent_list, discussion, data_file, **configs):
+          super().__init__(**configs)
+  ```
+
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。此前环境可在函数内创建或按索引重置。本段 `OSInteraction.start_sample` 为每条测例创建容器：
+  ```python
+  print("init container")
+  container = Container(config.image)
+  print("init container ok")
+  ```
+
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；WebShop 未实现 `release`。本段未出现任务类 `release`，但 `OSInteraction.start_sample` 在 `finally` 中停止该测例的容器：
+  ```python
+  finally:
+      try:
+          container.__del__()
+  ```
+  `Container.__del__` 调用 `self.container.stop()`；容器创建时设置 `remove=True`。此前 Worker 也通过 `docker run --rm` 启动，容器结束后自动移除。本段未见 AVD 创建、重启或销毁代码。
+
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段多个任务聚合结果，例如：
+  ```python
+  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:
+      overall = {
+          "total": len([config for config in results if config]),
+  ```
+
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未出现依据剩余内存等待或动态调整并发的逻辑，也未出现 `start_stample`。
+
+=== seg 14 (50.5s, 149463 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)`、`WebShop(Task)`、`AvalonBench(Task)`、`Mind2Web(Task)`、`OSInteraction(Task)` 和 `CardGame(Task)` 均调用 `super().__init__`，未直接修改任务类的 `self.name`：
+  ```python
+  class AvalonBench(Task):
+      def __init__(self, num_players, agent_list, discussion, data_file, **configs):
+          super().__init__(**configs)
+  ```
+
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。此前环境可在函数内创建或按索引重置。本段 `OSInteraction.start_sample` 为每条测例创建容器：
+  ```python
+  print("init container")
+  container = Container(config.image)
+  print("init container ok")
+  ```
+
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；WebShop 未实现 `release`。本段未出现任务类 `release`，但 `OSInteraction.start_sample` 在 `finally` 中停止该测例的容器：
+  ```python
+  finally:
+      try:
+          container.__del__()
+  ```
+  `Container.__del__` 调用 `self.container.stop()`；容器创建时设置 `remove=True`。此前 Worker 也通过 `docker run --rm` 启动，容器结束后自动移除。本段未见 AVD 创建、重启或销毁代码。
+
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段多个任务聚合结果，例如：
+  ```python
+  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:
+      overall = {
+          "total": len([config for config in results if config]),
+  ```
+
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未出现依据剩余内存等待或动态调整并发的逻辑，也未出现 `start_stample`。
+
+=== seg 15 (28.9s, 149040 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)`、`WebShop(Task)`、`AvalonBench(Task)`、`Mind2Web(Task)`、`OSInteraction(Task)` 和 `CardGame(Task)` 均调用 `super().__init__`，未直接修改任务类的 `self.name`：
+  ```python
+  class AvalonBench(Task):
+      def __init__(self, num_players, agent_list, discussion, data_file, **configs):
+          super().__init__(**configs)
+  ```
+
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。此前环境可在函数内创建或按索引重置。本段 `OSInteraction.start_sample` 为每条测例创建容器：
+  ```python
+  print("init container")
+  container = Container(config.image)
+  print("init container ok")
+  ```
+
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；WebShop 未实现 `release`。本段未出现任务类 `release`，但 `OSInteraction.start_sample` 在 `finally` 中停止该测例的容器：
+  ```python
+  finally:
+      try:
+          container.__del__()
+  ```
+  `Container.__del__` 调用 `self.container.stop()`；容器创建时设置 `remove=True`。此前 Worker 也通过 `docker run --rm` 启动，容器结束后自动移除。本段未见 AVD 创建、重启或销毁代码。
+
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段多个任务聚合结果，例如：
+  ```python
+  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:
+      overall = {
+          "total": len([config for config in results if config]),
+  ```
+
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未出现依据剩余内存等待或动态调整并发的逻辑，也未出现 `start_stample`。
+
+=== seg 16 (29.4s, 149397 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)`、`WebShop(Task)`、`AvalonBench(Task)`、`Mind2Web(Task)`、`OSInteraction(Task)` 和 `CardGame(Task)` 均调用 `super().__init__`，未直接修改任务类的 `self.name`：
+  ```python
+  class AvalonBench(Task):
+      def __init__(self, num_players, agent_list, discussion, data_file, **configs):
+          super().__init__(**configs)
+  ```
+
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。此前环境可在函数内创建或按索引重置。本段 `OSInteraction.start_sample` 为每条测例创建容器：
+  ```python
+  print("init container")
+  container = Container(config.image)
+  print("init container ok")
+  ```
+
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；WebShop 未实现 `release`。本段未出现任务类 `release`，但 `OSInteraction.start_sample` 在 `finally` 中停止该测例的容器：
+  ```python
+  finally:
+      try:
+          container.__del__()
+  ```
+  `Container.__del__` 调用 `self.container.stop()`；容器创建时设置 `remove=True`。此前 Worker 也通过 `docker run --rm` 启动，容器结束后自动移除。本段未见 AVD 创建、重启或销毁代码。
+
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段多个任务聚合结果，例如：
+  ```python
+  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:
+      overall = {
+          "total": len([config for config in results if config]),
+  ```
+
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未出现依据剩余内存等待或动态调整并发的逻辑，也未出现 `start_stample`。
+
+=== seg 17 ERROR HTTP 524: {"error":{"message":"openai_error","type":"bad_response_status_code","param":"","code":"bad_response_status_code"}}
+
+=== seg 18 (28.7s, 149241 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)`、`WebShop(Task)`、`AvalonBench(Task)`、`Mind2Web(Task)`、`OSInteraction(Task)` 和 `CardGame(Task)` 均调用 `super().__init__`，未直接修改任务类的 `self.name`：
+  ```python
+  class AvalonBench(Task):
+      def __init__(self, num_players, agent_list, discussion, data_file, **configs):
+          super().__init__(**configs)
+  ```
+
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。此前环境可在函数内创建或按索引重置。本段 `OSInteraction.start_sample` 为每条测例创建容器：
+  ```python
+  print("init container")
+  container = Container(config.image)
+  print("init container ok")
+  ```
+
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；WebShop 未实现 `release`。本段未出现任务类 `release`，但 `OSInteraction.start_sample` 在 `finally` 中停止该测例的容器：
+  ```python
+  finally:
+      try:
+          container.__del__()
+  ```
+  `Container.__del__` 调用 `self.container.stop()`；容器创建时设置 `remove=True`。此前 Worker 也通过 `docker run --rm` 启动，容器结束后自动移除。本段未见 AVD 创建、重启或销毁代码。
+
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段多个任务聚合结果，例如：
+  ```python
+  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:
+      overall = {
+          "total": len([config for config in results if config]),
+  ```
+
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未出现依据剩余内存等待或动态调整并发的逻辑，也未出现 `start_stample`。
+
+=== seg 19 (57.2s, 149508 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)`、`WebShop(Task)`、`AvalonBench(Task)`、`Mind2Web(Task)`、`OSInteraction(Task)` 和 `CardGame(Task)` 均调用 `super().__init__`，未直接修改任务类的 `self.name`：
+  ```python
+  class AvalonBench(Task):
+      def __init__(self, num_players, agent_list, discussion, data_file, **configs):
+          super().__init__(**configs)
+  ```
+
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。此前环境可在函数内创建或按索引重置。本段 `OSInteraction.start_sample` 为每条测例创建容器：
+  ```python
+  print("init container")
+  container = Container(config.image)
+  print("init container ok")
+  ```
+
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；WebShop 未实现 `release`。本段未出现任务类 `release`，但 `OSInteraction.start_sample` 在 `finally` 中停止该测例的容器：
+  ```python
+  finally:
+      try:
+          container.__del__()
+  ```
+  `Container.__del__` 调用 `self.container.stop()`；容器创建时设置 `remove=True`。此前 Worker 也通过 `docker run --rm` 启动，容器结束后自动移除。本段未见 AVD 创建、重启或销毁代码。
+
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段多个任务聚合结果，例如：
+  ```python
+  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:
+      overall = {
+          "total": len([config for config in results if config]),
+  ```
+
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未出现依据剩余内存等待或动态调整并发的逻辑，也未出现 `start_stample`。
+
+=== seg 20 (32.6s, 149186 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)`、`WebShop(Task)`、`AvalonBench(Task)`、`Mind2Web(Task)`、`OSInteraction(Task)` 和 `CardGame(Task)` 均调用 `super().__init__`，未直接修改任务类的 `self.name`：
+  ```python
+  class AvalonBench(Task):
+      def __init__(self, num_players, agent_list, discussion, data_file, **configs):
+          super().__init__(**configs)
+  ```
+
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。此前环境可在函数内创建或按索引重置。本段 `OSInteraction.start_sample` 为每条测例创建容器：
+  ```python
+  print("init container")
+  container = Container(config.image)
+  print("init container ok")
+  ```
+
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；WebShop 未实现 `release`。本段未出现任务类 `release`，但 `OSInteraction.start_sample` 在 `finally` 中停止该测例的容器：
+  ```python
+  finally:
+      try:
+          container.__del__()
+  ```
+  `Container.__del__` 调用 `self.container.stop()`；容器创建时设置 `remove=True`。此前 Worker 也通过 `docker run --rm` 启动，容器结束后自动移除。本段未见 AVD 创建、重启或销毁代码。
+
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段多个任务聚合结果，例如：
+  ```python
+  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:
+      overall = {
+          "total": len([config for config in results if config]),
+  ```
+
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未出现依据剩余内存等待或动态调整并发的逻辑，也未出现 `start_stample`。
+
+=== seg 21 (32.4s, 149938 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)`、`WebShop(Task)`、`AvalonBench(Task)`、`Mind2Web(Task)`、`OSInteraction(Task)` 和 `CardGame(Task)` 均调用 `super().__init__`，未直接修改任务类的 `self.name`：
+  ```python
+  class AvalonBench(Task):
+      def __init__(self, num_players, agent_list, discussion, data_file, **configs):
+          super().__init__(**configs)
+  ```
+
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。此前环境可在函数内创建或按索引重置。本段 `OSInteraction.start_sample` 为每条测例创建容器：
+  ```python
+  print("init container")
+  container = Container(config.image)
+  print("init container ok")
+  ```
+
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；WebShop 未实现 `release`。本段未出现任务类 `release`，但 `OSInteraction.start_sample` 在 `finally` 中停止该测例的容器：
+  ```python
+  finally:
+      try:
+          container.__del__()
+  ```
+  `Container.__del__` 调用 `self.container.stop()`；容器创建时设置 `remove=True`。此前 Worker 也通过 `docker run --rm` 启动，容器结束后自动移除。本段未见 AVD 创建、重启或销毁代码。
+
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段多个任务聚合结果，例如：
+  ```python
+  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:
+      overall = {
+          "total": len([config for config in results if config]),
+  ```
+
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未出现依据剩余内存等待或动态调整并发的逻辑，也未出现 `start_stample`。
+
+=== seg 22 (32.2s, 149532 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)`、`WebShop(Task)`、`AvalonBench(Task)`、`Mind2Web(Task)`、`OSInteraction(Task)` 和 `CardGame(Task)` 均调用 `super().__init__`，未直接修改任务类的 `self.name`：
+  ```python
+  class AvalonBench(Task):
+      def __init__(self, num_players, agent_list, discussion, data_file, **configs):
+          super().__init__(**configs)
+  ```
+
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。此前环境可在函数内创建或按索引重置。本段 `OSInteraction.start_sample` 为每条测例创建容器：
+  ```python
+  print("init container")
+  container = Container(config.image)
+  print("init container ok")
+  ```
+
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；WebShop 未实现 `release`。本段未出现任务类 `release`，但 `OSInteraction.start_sample` 在 `finally` 中停止该测例的容器：
+  ```python
+  finally:
+      try:
+          container.__del__()
+  ```
+  `Container.__del__` 调用 `self.container.stop()`；容器创建时设置 `remove=True`。此前 Worker 也通过 `docker run --rm` 启动，容器结束后自动移除。本段未见 AVD 创建、重启或销毁代码。
+
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段多个任务聚合结果，例如：
+  ```python
+  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:
+      overall = {
+          "total": len([config for config in results if config]),
+  ```
+
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未出现依据剩余内存等待或动态调整并发的逻辑，也未出现 `start_stample`。
+
+=== seg 23 (37.2s, 36324 chars in) ===
+- 扩展任务需继承并实现 `Task`，并在配置文件中指定。此前文档原文：“you only need to inherit and implement the Task class, then specify it in the configuration file.” `ALFWorld(Task)`、`WebShop(Task)`、`AvalonBench(Task)`、`Mind2Web(Task)`、`OSInteraction(Task)` 和 `CardGame(Task)` 均调用 `super().__init__`，未直接修改任务类的 `self.name`：
+  ```python
+  class AvalonBench(Task):
+      def __init__(self, num_players, agent_list, discussion, data_file, **configs):
+          super().__init__(**configs)
+  ```
+
+- `start_sample` 处理单条测例，由 Task Worker 创建异步任务执行，返回 `TaskSampleExecutionResult`。此前环境可在函数内创建或按索引重置。本段 `OSInteraction.start_sample` 为每条测例创建容器：
+  ```python
+  print("init container")
+  container = Container(config.image)
+  print("init container ok")
+  ```
+
+- `release` 在整个 `task_worker` 进程结束时调用，不是每条测例结束时调用。此前实现仅删除 `self.env`；WebShop 未实现 `release`。本段未出现任务类 `release`，但 `OSInteraction.start_sample` 在 `finally` 中停止该测例的容器：
+  ```python
+  finally:
+      try:
+          container.__del__()
+  ```
+  `Container.__del__` 调用 `self.container.stop()`；容器创建时设置 `remove=True`。此前 Worker 也通过 `docker run --rm` 启动，容器结束后自动移除。本段未见 AVD 创建、重启或销毁代码。
+
+- `calculate_overall` 在全部测例结果收集后由 Assigner 调用，返回任意 JSON 可序列化结构并写入 `overall.json`。本段多个任务聚合结果，例如：
+  ```python
+  def calculate_overall(self, results: List[TaskOutput]) -> Dict[str, Any]:
+      overall = {
+          "total": len([config for config in results if config]),
+  ```
+
+- `concurrency` 表示单个 Worker 支持的最大并发数；框架可配置 Task 并发或多个 Worker。本段未出现依据剩余内存等待或动态调整并发的逻辑，也未出现 `start_stample`。
+
+=== FINAL (total 948.2s) ===
+{"answer":"C","reason":"错误在于把每条测例结束后的 AVD 退出和 Docker 测试结束放入 release 函数。依据笔记，release 只在整个 task_worker 进程结束时调用，并不是每条测例结束时调用；而每条测例的环境清理应在 start_sample 的 finally 中完成，才能保证 AVD 在每个测试用例后重启并避免相互影响。"}

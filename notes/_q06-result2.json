@@ -1,0 +1,15 @@
+{
+  "result": true,
+  "status": 200,
+  "message": "请求成功",
+  "timestamp": 1795712748808,
+  "data": {
+    "value": {
+      "answer": "A",
+      "correct": "true",
+      "verdict": "{\"answer\":\"A\",\"reason\":\"笔记指出“Required PIN not entered (fP.10-4) N/A”，说明未输入所需 PIN 时仍可进行紧急呼叫；同时明确写着“Emergency calls may not be possible outside Japan depending on available network, signal conditions or handset settings.” 因此 A 与笔记相符。B 错在缓存即使手机关机也会保留；C 错在振动应设为关闭而非开启；D 错在无法通过扬声器播放音乐时应取消 Manner mode，而不是开启它。\"}",
+      "segInfo": "4/4",
+      "memo": "“Required PIN not entered (fP.10-4)  \nN/A”\n\n“Emergency calls may not be possible outside Japan depending on available network, signal conditions or handset settings.”\n\n“Retrieved Mobile Internet pages are temporarily  \nsaved in a cache. The cache remains even after a  \nsession ends or handset is turned off.”\n\n“Good Night Timer  \nDisable Alarm/Vibration/Light for a specific period  \nof time.”\n\n“When Good night timer is On, Alarm/Vibration/  \nLight is set to Off, and volume level is set to 0  \nfor functions that use sound.”\n\n“Deactivate other functions before Good night timer activates. If any other function is activated, Good night timer cannot be activated.”\n\n“Unable to play music via speaker  \nIs Manner mode set? Cancel Manner mode.”"
+    }
+  }
+}

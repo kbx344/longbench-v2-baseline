@@ -1,0 +1,15 @@
+{
+  "result": true,
+  "status": 200,
+  "message": "请求成功",
+  "timestamp": 1795707633743,
+  "data": {
+    "value": {
+      "answer": "?",
+      "correct": "false",
+      "verdict": "{\"error\":\"IllegalStateException: 模型接口 HTTP 403：{\\\"error\\\":{\\\"message\\\":\\\"用户额度不足, 剩余额度: ¥-0.005100 (request id: 202611261540335967533228268d9d6HB82k9cQ)\\\",\\\"type\\\":\\\"new_api_error\\\",\\\"param\\\":\\\"\\\",\\\"code\\\":\\\"insufficient_user_quota\\\"}}\"}",
+      "segInfo": "34/34",
+      "memo": "T.CFE 2022-04-12 14:20:00：Highest 100.495，Lowest 100.360，单分钟波动 0.135 Yuan（100.495 − 100.360）。\n引用：“T.CFE 2022-04-12 14:20:00               100.495                100.495                100.360                100.385              3483.44             3469”"
+    }
+  }
+}
