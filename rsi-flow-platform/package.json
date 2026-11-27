@@ -1,0 +1,40 @@
+{
+  "name": "chat1",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.2.5",
+    "@ant-design/x": "^2.7.0",
+    "@horsecoder/flow": "./node_horsecoder/@horsecoder/flow",
+    "@horsecoder/visual-core": "file:../rsi-flow-visual",
+    "@reduxjs/toolkit": "^2.12.0",
+    "antd": "^6.4.3",
+    "axios": "^1.16.1",
+    "clsx": "^2.1.1",
+    "immer": "^11.1.8",
+    "js-cookie": "^3.0.8",
+    "magic-string": "0.30.21",
+    "next": "16.2.6",
+    "qs": "^6.15.2",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-redux": "^9.3.0",
+    "redux": "^5.0.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

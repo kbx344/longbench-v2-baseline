@@ -1,0 +1,70 @@
+{
+  "id": "@com.horsecoder.common.whuTalent.flowTesting.core/FLOW_QA_Q10",
+  "name": "FLOW_QA_Q10",
+  "type": "flow",
+  "title": "跨年数值题：按段切分 → 占比三元组扫描 → 差值裁决",
+  "params": [
+    { "title": "题号", "name": "qid", "type": "String", "scope": "defaultScope", "notnull": true }
+  ],
+  "results": [
+    { "title": "答案", "name": "answer", "type": "String", "scope": "defaultScope", "notnull": true },
+    { "title": "是否正确", "name": "correct", "type": "String", "scope": "defaultScope", "notnull": true },
+    { "title": "裁决理由", "name": "verdict", "type": "String", "scope": "defaultScope" },
+    { "title": "各年剩余占比", "name": "stats", "type": "String", "scope": "defaultScope" },
+    { "title": "扫描记录", "name": "memo", "type": "String", "scope": "defaultScope" }
+  ],
+  "nodes": [
+    {
+      "id": "SPLIT",
+      "type": "event",
+      "title": "按 15 万字符顺序切段（纯代码）",
+      "reference": "FLOW_QA_SPLIT_CHUNKS",
+      "params": [
+        { "name": "qid", "type": "String", "scope": "defaultScope" }
+      ],
+      "results": [
+        { "name": "question", "type": "String", "scope": "defaultScope" },
+        { "name": "choices", "type": "String", "scope": "defaultScope" },
+        { "name": "answerKey", "type": "String", "scope": "defaultScope" },
+        { "name": "segments", "type": "String", "scope": "defaultScope" }
+      ]
+    },
+    {
+      "id": "NUMSCAN",
+      "type": "event",
+      "title": "扫两地年报的占比三元组（纯代码）",
+      "reference": "FLOW_QA_NUM_SCAN",
+      "params": [
+        { "name": "segments", "type": "String", "scope": "defaultScope" }
+      ],
+      "results": [
+        { "name": "stats", "type": "String", "scope": "defaultScope" },
+        { "name": "memo", "type": "String", "scope": "defaultScope" }
+      ]
+    },
+    {
+      "id": "CALC",
+      "type": "event",
+      "title": "算年份差值并匹配选项（纯代码，失败才退回模型）",
+      "reference": "FLOW_QA_CALC_DECIDE",
+      "params": [
+        { "name": "stats", "type": "String", "scope": "defaultScope" },
+        { "name": "memo", "type": "String", "scope": "defaultScope" },
+        { "name": "question", "type": "String", "scope": "defaultScope" },
+        { "name": "choices", "type": "String", "scope": "defaultScope" },
+        { "name": "answerKey", "type": "String", "scope": "defaultScope" }
+      ],
+      "results": [
+        { "name": "answer", "type": "String", "scope": "defaultScope" },
+        { "name": "correct", "type": "String", "scope": "defaultScope" },
+        { "name": "verdict", "type": "String", "scope": "defaultScope" }
+      ]
+    }
+  ],
+  "routes": [
+    { "source": "start", "target": "SPLIT", "condition": "true" },
+    { "source": "SPLIT", "target": "NUMSCAN", "condition": "true" },
+    { "source": "NUMSCAN", "target": "CALC", "condition": "true" },
+    { "source": "CALC", "target": "end", "condition": "true" }
+  ]
+}

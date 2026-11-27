@@ -1,0 +1,71 @@
+{
+  "id": "@com.horsecoder.common.whuTalent.flowTesting.core/FLOW_QA_Q09",
+  "name": "FLOW_QA_Q09",
+  "type": "flow",
+  "title": "矛盾题：按段切分 → 全库楼层提及扫描 → 描述矛盾裁决",
+  "params": [
+    { "title": "题号", "name": "qid", "type": "String", "scope": "defaultScope", "notnull": true }
+  ],
+  "results": [
+    { "title": "答案", "name": "answer", "type": "String", "scope": "defaultScope", "notnull": true },
+    { "title": "是否正确", "name": "correct", "type": "String", "scope": "defaultScope", "notnull": true },
+    { "title": "裁决理由", "name": "verdict", "type": "String", "scope": "defaultScope" },
+    { "title": "楼层提及清单", "name": "memo", "type": "String", "scope": "defaultScope" },
+    { "title": "扫描统计", "name": "statsTable", "type": "String", "scope": "defaultScope" }
+  ],
+  "nodes": [
+    {
+      "id": "SPLIT",
+      "type": "event",
+      "title": "按 15 万字符顺序切段（纯代码）",
+      "reference": "FLOW_QA_SPLIT_CHUNKS",
+      "params": [
+        { "name": "qid", "type": "String", "scope": "defaultScope" }
+      ],
+      "results": [
+        { "name": "question", "type": "String", "scope": "defaultScope" },
+        { "name": "choices", "type": "String", "scope": "defaultScope" },
+        { "name": "answerKey", "type": "String", "scope": "defaultScope" },
+        { "name": "segments", "type": "String", "scope": "defaultScope" }
+      ]
+    },
+    {
+      "id": "SCAN",
+      "type": "event",
+      "title": "全库楼层提及扫描（纯代码）",
+      "reference": "FLOW_QA_ENTITY_SCAN",
+      "params": [
+        { "name": "question", "type": "String", "scope": "defaultScope" },
+        { "name": "segments", "type": "String", "scope": "defaultScope" }
+      ],
+      "results": [
+        { "name": "memo", "type": "String", "scope": "defaultScope" },
+        { "name": "statsTable", "type": "String", "scope": "defaultScope" }
+      ]
+    },
+    {
+      "id": "DECIDE",
+      "type": "event",
+      "title": "矛盾裁决：判同一住处是否前后不一致",
+      "reference": "FLOW_QA_DECIDE_CONFLICT",
+      "params": [
+        { "name": "memo", "type": "String", "scope": "defaultScope" },
+        { "name": "question", "type": "String", "scope": "defaultScope" },
+        { "name": "choices", "type": "String", "scope": "defaultScope" },
+        { "name": "answerKey", "type": "String", "scope": "defaultScope" },
+        { "name": "statsTable", "type": "String", "scope": "defaultScope" }
+      ],
+      "results": [
+        { "name": "answer", "type": "String", "scope": "defaultScope" },
+        { "name": "correct", "type": "String", "scope": "defaultScope" },
+        { "name": "verdict", "type": "String", "scope": "defaultScope" }
+      ]
+    }
+  ],
+  "routes": [
+    { "source": "start", "target": "SPLIT", "condition": "true" },
+    { "source": "SPLIT", "target": "SCAN", "condition": "true" },
+    { "source": "SCAN", "target": "DECIDE", "condition": "true" },
+    { "source": "DECIDE", "target": "end", "condition": "true" }
+  ]
+}

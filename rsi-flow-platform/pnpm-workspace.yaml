@@ -1,0 +1,9 @@
+packages:
+  - '.'
+
+allowBuilds:
+  sharp: false
+
+permissions:
+  '@reduxjs/toolkit':
+    skills: false
