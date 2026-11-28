@@ -42,11 +42,17 @@ notes/cp.txt
 _ppt_extract/
 *.mp4
 
-# ===== 外部克隆的工程仓库（各自独立 git，不在本仓库嵌套提交） =====
+# ===== 四个子仓库：各自独立成库，本仓库不再收录（只留论文、数据与脚本） =====
+# 后端      https://github.com/kbx344/rsi-data-spring-boot
+# 前端      https://github.com/kbx344/rsi-data-platform
+# 前端编排   https://github.com/kbx344/rsi-data-visual
 rsi-flow/
+rsi-flow-visual/
 rsi-flow-platform/
 rsi-flow-spring-boot/
-rsi-flow-visual/
+
+**/.vs/
+**/*.log
 
 # ===== 前端/后端运行临时日志 =====
 notes/_frontend.log
